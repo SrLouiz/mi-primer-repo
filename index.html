@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Primer Proyecto Fullstack</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .api-response {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            text-align: left;
+            display: none;
+        }
+        .api-response pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        .api-status {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¡Bienvenido a Mi Primer Proyecto Fullstack!</h1>
+        <p>Esta es una aplicación fullstack con frontend y backend funcionando juntos.</p>
+        <p>Haz clic en el botón para probar la conexión con el backend:</p>
+        
+        <button id="testApi" class="btn">Probar API</button>
+        
+        <div id="apiResponse" class="api-response">
+            <h3>Respuesta del servidor:</h3>
+            <pre id="responseData"></pre>
+            <p class="api-status">Última actualización: <span id="timestamp">Nunca</span></p>
+        </div>
+        
+        <script>
+            document.getElementById('testApi').addEventListener('click', async function() {
+                const button = this;
+                const responseContainer = document.getElementById('apiResponse');
+                const responseData = document.getElementById('responseData');
+                const timestamp = document.getElementById('timestamp');
+                
+                // Mostrar estado de carga
+                button.innerHTML = '<span class="loading"></span> Cargando...';
+                button.disabled = true;
+                
+                try {
+                    // Llamar al endpoint de la API
+                    const response = await fetch('/api/hello');
+                    const data = await response.json();
+                    
+                    // Mostrar los datos
+                    responseContainer.style.display = 'block';
+                    responseData.textContent = JSON.stringify(data, null, 2);
+                    timestamp.textContent = new Date().toLocaleTimeString();
+                    
+                    // Restaurar el botón
+                    button.innerHTML = 'Probar API de nuevo';
+                    button.disabled = false;
+                } catch (error) {
+                    // Mostrar error
+                    responseContainer.style.display = 'block';
+                    responseData.textContent = 'Error: ' + error.message;
+                    timestamp.textContent = new Date().toLocaleTimeString();
+                    
+                    // Restaurar el botón
+                    button.innerHTML = 'Intentar de nuevo';
+                    button.disabled = false;
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
+
